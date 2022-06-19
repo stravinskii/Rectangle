@@ -22,6 +22,7 @@ class SettingsViewController: NSViewController {
     @IBOutlet weak var checkForUpdatesAutomaticallyCheckbox: NSButton!
     @IBOutlet weak var checkForUpdatesButton: NSButton!
     @IBOutlet weak var unsnapRestoreButton: NSButton!
+    @IBOutlet weak var enableGapsInternalDisplayCheckbox: NSButton!
     @IBOutlet weak var gapSlider: NSSlider!
     @IBOutlet weak var gapLabel: NSTextField!
     @IBOutlet weak var cursorAcrossCheckbox: NSButton!
@@ -78,7 +79,12 @@ class SettingsViewController: NSViewController {
         let newSetting: Bool = sender.state == .on
         Defaults.unsnapRestore.enabled = newSetting
     }
-    
+
+    @IBAction func toggleDisableGapInternalDisplay(_ sender: NSButton) {
+        let newSetting: Bool = sender.state == .on
+        Defaults.enableGapsInternalDisplay.enabled = newSetting
+    }
+
     @IBAction func toggleCursorMove(_ sender: NSButton) {
         let newSetting: Bool = sender.state == .on
         Defaults.moveCursorAcrossDisplays.enabled = newSetting
@@ -200,7 +206,8 @@ class SettingsViewController: NSViewController {
         gapSlider.intValue = Int32(Defaults.gapSize.value)
         gapLabel.stringValue = "\(gapSlider.intValue) px"
         gapSlider.isContinuous = true
-        
+        enableGapsInternalDisplayCheckbox.state = Defaults.enableGapsInternalDisplay.userEnabled ? .on : .off
+
         unsnapRestoreButton.state = Defaults.unsnapRestore.userDisabled ? .off : .on
         
         cursorAcrossCheckbox.state = Defaults.moveCursorAcrossDisplays.userEnabled ? .on : .off

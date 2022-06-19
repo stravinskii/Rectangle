@@ -113,11 +113,11 @@ class WindowManager {
         }
         
         let gapsApplicable = calcResult.resultingAction.gapsApplicable
-        
         if Defaults.gapSize.value > 0, gapsApplicable != .none {
-            let gapSharedEdges = calcResult.resultingSubAction?.gapSharedEdge ?? calcResult.resultingAction.gapSharedEdge
-            
-            calcResult.rect = GapCalculation.applyGaps(calcResult.rect, dimension: gapsApplicable, sharedEdges: gapSharedEdges, gapSize: Defaults.gapSize.value)
+            if !calcResult.screen.isBuiltInDisplay() || Defaults.enableGapsInternalDisplay.userEnabled {
+                let gapSharedEdges = calcResult.resultingSubAction?.gapSharedEdge ?? calcResult.resultingAction.gapSharedEdge
+                calcResult.rect = GapCalculation.applyGaps(calcResult.rect, dimension: gapsApplicable, sharedEdges: gapSharedEdges, gapSize: Defaults.gapSize.value)
+            }
         }
 
         if currentNormalizedRect.equalTo(calcResult.rect) {

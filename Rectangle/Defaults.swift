@@ -64,6 +64,7 @@ class Defaults {
     static let autoMaximize = OptionalBoolDefault(key: "autoMaximize")
     static let applyGapsToMaximize = OptionalBoolDefault(key: "applyGapsToMaximize")
     static let applyGapsToMaximizeHeight = OptionalBoolDefault(key: "applyGapsToMaximizeHeight")
+    static let enableGapsInternalDisplay = OptionalBoolDefault(key: "enableGapsInternalDisplay")
     static let cornerSnapAreaSize = FloatDefault(key: "cornerSnapAreaSize", defaultValue: 20)
     static let shortEdgeSnapAreaSize = FloatDefault(key: "shortEdgeSnapAreaSize", defaultValue: 145)
     static let cascadeAllDeltaSize = FloatDefault(key: "cascadeAllDeltaSize", defaultValue: 30)
@@ -126,7 +127,8 @@ class Defaults {
         cornerSnapAreaSize,
         shortEdgeSnapAreaSize,
         cascadeAllDeltaSize,
-        sixthsSnapArea
+        sixthsSnapArea,
+        enableGapsInternalDisplay
     ]
 }
 

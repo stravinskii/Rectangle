@@ -19,6 +19,7 @@
 		6490B39D27BF984D0056C220 /* BottomCenterLeftEighthCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6490B39C27BF984D0056C220 /* BottomCenterLeftEighthCalculation.swift */; };
 		6490B39F27BF98840056C220 /* BottomCenterRightEighthCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6490B39E27BF98840056C220 /* BottomCenterRightEighthCalculation.swift */; };
 		6490B3A127BF98C70056C220 /* BottomRightEighthCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6490B3A027BF98C70056C220 /* BottomRightEighthCalculation.swift */; };
+		66FECD65285EFFF900CE2DBE /* NSScreenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FECD64285EFFF900CE2DBE /* NSScreenExtension.swift */; };
 		866661F2257D248A00A9CD2D /* RepeatedExecutionsInThirdsCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866661F1257D248A00A9CD2D /* RepeatedExecutionsInThirdsCalculation.swift */; };
 		98192DDA270F606C00015E66 /* Debounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98192DD9270F606C00015E66 /* Debounce.swift */; };
 		98192DDE2717201100015E66 /* ReverseAllManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98192DDD2717201000015E66 /* ReverseAllManager.swift */; };
@@ -168,6 +169,7 @@
 		6490B39C27BF984D0056C220 /* BottomCenterLeftEighthCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCenterLeftEighthCalculation.swift; sourceTree = "<group>"; };
 		6490B39E27BF98840056C220 /* BottomCenterRightEighthCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCenterRightEighthCalculation.swift; sourceTree = "<group>"; };
 		6490B3A027BF98C70056C220 /* BottomRightEighthCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomRightEighthCalculation.swift; sourceTree = "<group>"; };
+		66FECD64285EFFF900CE2DBE /* NSScreenExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSScreenExtension.swift; sourceTree = "<group>"; };
 		80B094EEF6AE857D468B639A /* Pods-RectangleLauncher.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RectangleLauncher.debug.xcconfig"; path = "Target Support Files/Pods-RectangleLauncher/Pods-RectangleLauncher.debug.xcconfig"; sourceTree = "<group>"; };
 		81D6E6EACB077B1A204F3A62 /* Pods_RectangleTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RectangleTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		866661F1257D248A00A9CD2D /* RepeatedExecutionsInThirdsCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatedExecutionsInThirdsCalculation.swift; sourceTree = "<group>"; };
@@ -507,6 +509,7 @@
 				98D16A482592B460005228CB /* NotificationExtension.swift */,
 				98BEFA472620DEDC00D9D54F /* NSImageExtension.swift */,
 				98192DD9270F606C00015E66 /* Debounce.swift */,
+				66FECD64285EFFF900CE2DBE /* NSScreenExtension.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -951,6 +954,7 @@
 				98192DDE2717201100015E66 /* ReverseAllManager.swift in Sources */,
 				98A009B1251252C900CFBF0C /* ThirdFourthCalculation.swift in Sources */,
 				D04CE31227817C9B00BD47B3 /* NinthsRepeated.swift in Sources */,
+				66FECD65285EFFF900CE2DBE /* NSScreenExtension.swift in Sources */,
 				9824703F22B13FBC0037B409 /* ScreenDetection.swift in Sources */,
 				9821402B22B388A000ABFB3F /* LowerRightCalculation.swift in Sources */,
 				D04CE30427817A6F00BD47B3 /* TopRightNinthCalculation.swift in Sources */,
