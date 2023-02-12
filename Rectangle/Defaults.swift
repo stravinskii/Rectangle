@@ -69,6 +69,16 @@ class Defaults {
     static let shortEdgeSnapAreaSize = FloatDefault(key: "shortEdgeSnapAreaSize", defaultValue: 145)
     static let cascadeAllDeltaSize = FloatDefault(key: "cascadeAllDeltaSize", defaultValue: 30)
     static let sixthsSnapArea = OptionalBoolDefault(key: "sixthsSnapArea")
+    static let stageSize = FloatDefault(key: "stageSize", defaultValue: 190)
+    static let dragFromStage = OptionalBoolDefault(key: "dragFromStage")
+    static let alwaysAccountForStage = OptionalBoolDefault(key: "alwaysAccountForStage")
+    static let landscapeSnapAreas = JSONDefault<[Directional:SnapAreaConfig]>(key: "landscapeSnapAreas")
+    static let portraitSnapAreas = JSONDefault<[Directional:SnapAreaConfig]>(key: "portraitSnapAreas")
+    static let missionControlDragging = OptionalBoolDefault(key: "missionControlDragging")
+    static let enhancedUI = IntEnumDefault<EnhancedUI>(key: "enhancedUI", defaultValue: .disableEnable)
+    static let footprintAnimationDurationMultiplier = FloatDefault(key: "footprintAnimationDurationMultiplier", defaultValue: 0)
+    static let missionControlDraggingAllowedOffscreenDistance = FloatDefault(key: "missionControlDraggingAllowedOffscreenDistance", defaultValue: 25)
+    static let missionControlDraggingDisallowedDuration = IntDefault(key: "missionControlDraggingDisallowedDuration", defaultValue: 250)
 
     static var array: [Default] = [
         launchOnLogin,
@@ -128,7 +138,17 @@ class Defaults {
         shortEdgeSnapAreaSize,
         cascadeAllDeltaSize,
         sixthsSnapArea,
-        enableGapsInternalDisplay
+        stageSize,
+        dragFromStage,
+        alwaysAccountForStage,
+        landscapeSnapAreas,
+        portraitSnapAreas,
+        missionControlDragging,
+        enhancedUI,
+        footprintAnimationDurationMultiplier,
+        missionControlDraggingAllowedOffscreenDistance,
+        missionControlDraggingDisallowedDuration,
+        enableGapsInternalDisplay,
     ]
 }
 
@@ -137,7 +157,7 @@ struct CodableDefault: Codable {
     let int: Int?
     let float: Float?
     let string: String?
-    
+
     init(bool: Bool? = nil, int: Int? = nil, float: Float? = nil, string: String? = nil) {
         self.bool = bool
         self.int = int
@@ -155,7 +175,7 @@ protocol Default {
 class BoolDefault: Default {
     public private(set) var key: String
     private var initialized = false
-    
+
     var enabled: Bool {
         didSet {
             if initialized {
@@ -163,19 +183,19 @@ class BoolDefault: Default {
             }
         }
     }
-    
+
     init(key: String) {
         self.key = key
         enabled = UserDefaults.standard.bool(forKey: key)
         initialized = true
     }
-    
+
     func load(from codable: CodableDefault) {
         if let value = codable.bool {
             self.enabled = value
         }
     }
-    
+
     func toCodable() -> CodableDefault {
         return CodableDefault(bool: enabled)
     }
@@ -184,7 +204,7 @@ class BoolDefault: Default {
 class OptionalBoolDefault: Default {
     public private(set) var key: String
     private var initialized = false
-    
+
     var enabled: Bool? {
         didSet {
             if initialized {
@@ -198,17 +218,17 @@ class OptionalBoolDefault: Default {
             }
         }
     }
-    
+
     var userDisabled: Bool { enabled == false }
     var userEnabled: Bool { enabled == true }
-    
+
     init(key: String) {
         self.key = key
         let intValue = UserDefaults.standard.integer(forKey: key)
         set(using: intValue)
         initialized = true
     }
-    
+
     private func set(using intValue: Int) {
         switch intValue {
         case 0: enabled = nil
@@ -217,13 +237,13 @@ class OptionalBoolDefault: Default {
         default: break
         }
     }
-    
+
     func load(from codable: CodableDefault) {
         if let value = codable.int {
             set(using: value)
         }
     }
-    
+
     func toCodable() -> CodableDefault {
         guard let enabled = enabled else { return CodableDefault(int: 0)}
         let intValue = enabled ? 1 : 2
@@ -234,7 +254,7 @@ class OptionalBoolDefault: Default {
 class StringDefault: Default {
     public private(set) var key: String
     private var initialized = false
-    
+
     var value: String? {
         didSet {
             if initialized {
@@ -242,17 +262,17 @@ class StringDefault: Default {
             }
         }
     }
-    
+
     init(key: String) {
         self.key = key
         value = UserDefaults.standard.string(forKey: key)
         initialized = true
     }
-    
+
     func load(from codable: CodableDefault) {
         value = codable.string
     }
-    
+
     func toCodable() -> CodableDefault {
         return CodableDefault(string: value)
     }
@@ -261,7 +281,7 @@ class StringDefault: Default {
 class FloatDefault: Default {
     public private(set) var key: String
     private var initialized = false
-    
+
     var value: Float {
         didSet {
             if initialized {
@@ -269,7 +289,7 @@ class FloatDefault: Default {
             }
         }
     }
-    
+
     var cgFloat: CGFloat { CGFloat(value) }
 
     init(key: String, defaultValue: Float = 0) {
@@ -280,13 +300,13 @@ class FloatDefault: Default {
         }
         initialized = true
     }
-    
+
     func load(from codable: CodableDefault) {
         if let float = codable.float {
             value = float
         }
     }
-    
+
     func toCodable() -> CodableDefault {
         return CodableDefault(float: value)
     }
@@ -295,7 +315,7 @@ class FloatDefault: Default {
 class IntDefault: Default {
     public private(set) var key: String
     private var initialized = false
-    
+
     var value: Int {
         didSet {
             if initialized {
@@ -303,28 +323,31 @@ class IntDefault: Default {
             }
         }
     }
-    
-    init(key: String) {
+
+    init(key: String, defaultValue: Int = 0) {
         self.key = key
         value = UserDefaults.standard.integer(forKey: key)
+        if(defaultValue != 0 && value == 0) {
+            value = defaultValue
+        }
         initialized = true
     }
-    
+
     func load(from codable: CodableDefault) {
         if let int = codable.int {
             value = int
         }
     }
-    
+
     func toCodable() -> CodableDefault {
         return CodableDefault(int: value)
     }
 }
 
 class JSONDefault<T: Codable>: StringDefault {
-    
+
     private var typeInitialized = false
-    
+
     var typedValue: T? {
         didSet {
             if typeInitialized {
@@ -332,29 +355,72 @@ class JSONDefault<T: Codable>: StringDefault {
             }
         }
     }
-    
+
     override init(key: String) {
         super.init(key: key)
         loadFromJSON()
         typeInitialized = true
     }
-    
+
+    override func load(from codable: CodableDefault) {
+        if value != codable.string {
+            value = codable.string
+            typeInitialized = false
+            loadFromJSON()
+            typeInitialized = true
+        }
+    }
+
     private func loadFromJSON() {
         guard let jsonString = value else { return }
         let decoder = JSONDecoder()
         guard let jsonData = jsonString.data(using: .utf8) else { return }
         typedValue = try? decoder.decode(T.self, from: jsonData)
     }
-    
+
     private func saveToJSON(_ obj: T?) {
         let encoder = JSONEncoder()
-        
+
         if let jsonData = try? encoder.encode(obj) {
             let jsonString = String(data: jsonData, encoding: .utf8)
             if jsonString != value {
                 value = jsonString
             }
         }
+    }
+}
+
+class IntEnumDefault<E: RawRepresentable>: Default where E.RawValue == Int {
+    public private(set) var key: String
+    private let defaultValue: E
+
+    var _value: E
+    var value: E {
+        set {
+            if newValue != _value {
+                _value = newValue
+                UserDefaults.standard.set(_value, forKey: key)
+            }
+        }
+        get { _value }
+    }
+
+    init(key: String, defaultValue: E) {
+        self.key = key
+        self.defaultValue = defaultValue
+        let intValue = UserDefaults.standard.integer(forKey: key)
+        _value = E(rawValue: intValue) ?? defaultValue
+    }
+
+    func load(from codable: CodableDefault) {
+        if let intValue = codable.int, _value.rawValue != intValue {
+            _value = E(rawValue: intValue) ?? defaultValue
+            UserDefaults.standard.set(_value.rawValue, forKey: key)
+        }
+    }
+
+    func toCodable() -> CodableDefault {
+        CodableDefault(int: value.rawValue)
     }
 }
 

@@ -26,7 +26,7 @@ class WindowManager {
         ]
     }
 
-    private func recordAction(windowId: Int, resultingRect: CGRect, action: WindowAction, subAction: SubWindowAction?) {
+    private func recordAction(windowId: CGWindowID, resultingRect: CGRect, action: WindowAction, subAction: SubWindowAction?) {
         let newCount: Int
         if let lastRectangleAction = AppDelegate.windowHistory.lastRectangleActions[windowId], lastRectangleAction.action == action {
             newCount = lastRectangleAction.count + 1
@@ -43,8 +43,8 @@ class WindowManager {
     }
 
     func execute(_ parameters: ExecutionParameters) {
-        guard let frontmostWindowElement = parameters.windowElement ?? AccessibilityElement.frontmostWindow(),
-              let windowId = parameters.windowId ?? frontmostWindowElement.getIdentifier()
+        guard let frontmostWindowElement = parameters.windowElement ?? AccessibilityElement.getFrontWindowElement(),
+              let windowId = parameters.windowId ?? frontmostWindowElement.getWindowId()
         else {
             NSSound.beep()
             return
@@ -54,7 +54,7 @@ class WindowManager {
 
         if action == .restore {
             if let restoreRect = AppDelegate.windowHistory.restoreRects[windowId] {
-                frontmostWindowElement.setRectOf(restoreRect)
+                frontmostWindowElement.setFrame(restoreRect)
             }
             AppDelegate.windowHistory.lastRectangleActions.removeValue(forKey: windowId)
             return
@@ -73,7 +73,7 @@ class WindowManager {
             return
         }
         
-        let currentWindowRect: CGRect = frontmostWindowElement.rectOfElement()
+        let currentWindowRect: CGRect = frontmostWindowElement.frame
         
         var lastRectangleAction = AppDelegate.windowHistory.lastRectangleActions[windowId]
         
@@ -91,7 +91,7 @@ class WindowManager {
             }
         }
         
-        if frontmostWindowElement.isSheet()
+        if frontmostWindowElement.isSheet == true
             || currentWindowRect.isNull
             || usableScreens.frameOfCurrentScreen.isNull
             || usableScreens.visibleFrameOfCurrentScreen.isNull {
@@ -100,7 +100,7 @@ class WindowManager {
             return
         }
         
-        let currentNormalizedRect = AccessibilityElement.normalizeCoordinatesOf(currentWindowRect)
+        let currentNormalizedRect = currentWindowRect.screenFlipped
         let currentWindow = Window(id: windowId, rect: currentNormalizedRect)
         
         let windowCalculation = WindowCalculationFactory.calculationsByAction[action]
@@ -128,11 +128,15 @@ class WindowManager {
             return
         }
         
-        let newRect = AccessibilityElement.normalizeCoordinatesOf(calcResult.rect)
+        let newRect = calcResult.rect.screenFlipped
 
-        let visibleFrameOfDestinationScreen = calcResult.screen.adjustedVisibleFrame
+        let isTodo = Defaults.todoMode.enabled && TodoManager.isTodoWindow(id: windowId)
+        
+        let visibleFrameOfDestinationScreen = isTodo
+            ? calcResult.screen.frame
+            : calcResult.resultingScreenFrame
 
-        let useFixedSizeMover = (!frontmostWindowElement.isResizable() && action.resizes) || frontmostWindowElement.isSystemDialog()
+        let useFixedSizeMover = (!frontmostWindowElement.isResizable() && action.resizes) || frontmostWindowElement.isSystemDialog == true
         let windowMoverChain = useFixedSizeMover
             ? fixedSizeWindowMoverChain
             : standardWindowMoverChain
@@ -141,7 +145,7 @@ class WindowManager {
             windowMover.moveWindowRect(newRect, frameOfScreen: usableScreens.frameOfCurrentScreen, visibleFrameOfScreen: visibleFrameOfDestinationScreen, frontmostWindowElement: frontmostWindowElement, action: action)
         }
         
-        let resultingRect = frontmostWindowElement.rectOfElement()
+        let resultingRect = frontmostWindowElement.frame
         
         if Defaults.moveCursor.userEnabled, parameters.source == .keyboardShortcut {
             let windowCenter = NSMakePoint(NSMidX(resultingRect), NSMidY(resultingRect))
@@ -186,10 +190,10 @@ struct ExecutionParameters {
     let updateRestoreRect: Bool
     let screen: NSScreen?
     let windowElement: AccessibilityElement?
-    let windowId: Int?
+    let windowId: CGWindowID?
     let source: ExecutionSource
 
-    init(_ action: WindowAction, updateRestoreRect: Bool = true, screen: NSScreen? = nil, windowElement: AccessibilityElement? = nil, windowId: Int? = nil, source: ExecutionSource = .keyboardShortcut) {
+    init(_ action: WindowAction, updateRestoreRect: Bool = true, screen: NSScreen? = nil, windowElement: AccessibilityElement? = nil, windowId: CGWindowID? = nil, source: ExecutionSource = .keyboardShortcut) {
         self.action = action
         self.updateRestoreRect = updateRestoreRect
         self.screen = screen
@@ -200,5 +204,5 @@ struct ExecutionParameters {
 }
 
 enum ExecutionSource {
-    case keyboardShortcut, dragToSnap, menuItem
+    case keyboardShortcut, dragToSnap, menuItem, url
 }

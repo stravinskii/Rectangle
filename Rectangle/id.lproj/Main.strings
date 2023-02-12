@@ -689,3 +689,28 @@
 
 /* Class = "NSTextFieldCell"; title = "While in Todo Mode, you can refresh the Todo Mode layout by selecting \"Reflow Todo\" in the Rectangle menu or executing the associated keyboard shortcut."; ObjectID = "q9C-qZ-xw5"; */
 "q9C-qZ-xw5.title" = "Saat dalam Mode Todo, Anda dapat menyegarkan tata letak Mode Todo dengan memilih \"Alur Ulang Todo\ » di menu Rectangle menu atau menjalankan pintasan keyboard terkait.";
+
+/* Class = "NSTextFieldCell"; title = "Stage Manager recent apps area"; ObjectID = "ayu-YO-10p"; */
+"ayu-YO-10p.title" = "Stage Manager recent apps area";
+
+/* Class = "NSTextFieldCell"; title = "If the area is too small, recent apps will be hidden"; ObjectID = "xE6-jw-EPt"; */
+"xE6-jw-EPt.title" = "If the area is too small, recent apps will be hidden";
+
+"Left half, top/bottom half near corners" = "Left half, top/bottom half near corners";
+"Right half, top/bottom half near corners" = "Right half, top/bottom half near corners";
+"Thirds, drag toward center for two thirds" = "Thirds, drag toward center for two thirds";
+"Thirds, top/bottom half near corners" = "Thirds, top/bottom half near corners";
+"Left or right half" = "Left or right half";
+"Top sixths from corners; maximize" = "Top sixths from corners; maximize";
+"Bottom sixths from corners; thirds" = "Bottom sixths from corners; thirds";
+"Fourths columns" = "Fourths columns";
+
+/* Class = "NSButtonCell"; title = "Disable fast dragging to Mission Control"; ObjectID = "3hZ-Cs-EZ6"; */
+"3hZ-Cs-EZ6.title" = "Disable fast dragging to Mission Control";
+
+"Go to System Settings → Privacy & Security → Accessibility" = "Go to System Settings → Privacy & Security → Accessibility";
+
+"Open System Settings" = "Open System Settings";
+
+/* Class = "NSButtonCell"; title = "Animate footprint"; ObjectID = "kx2-tZ-lk8"; */
+"kx2-tZ-lk8.title" = "Animate footprint";

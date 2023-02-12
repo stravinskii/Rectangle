@@ -1,11 +1,10 @@
 # Rectangle
 
-![Build status](https://github.com/rxhanson/Rectangle/workflows/Build/badge.svg)
-[![Monthly downloads](https://badgen.net/homebrew/cask/dm/rectangle)](https://formulae.brew.sh/cask/rectangle)
+[![Build](https://github.com/rxhanson/Rectangle/actions/workflows/build.yml/badge.svg)](https://github.com/rxhanson/Rectangle/actions/workflows/build.yml)
 
 Rectangle is a window management app based on Spectacle, written in Swift.
 
-![Screenshot](https://user-images.githubusercontent.com/13651296/101402672-57ab5300-38d4-11eb-9e8c-6a3147d26711.png)
+![Screenshot](https://user-images.githubusercontent.com/13651296/183785536-a67a2e2a-7c55-4c19-9bf8-482e734b1632.png)
 
 ## System Requirements
 
@@ -23,7 +22,7 @@ brew install --cask rectangle
 
 ## How to use it
 
-The keyboard shortcuts are self explanatory, but the snap areas can use some explanation if you've never used them on Windows or other window management apps.
+The [keyboard shortcuts](https://support.apple.com/guide/mac-help/what-are-those-symbols-shown-in-menus-cpmh0011/mac) are self explanatory, but the snap areas can use some explanation if you've never used them on Windows or other window management apps.
 
 Drag a window to the edge of the screen. When the mouse cursor reaches the edge of the screen, you'll see a footprint that Rectangle will attempt to resize and move the window to when the click is released.
 
@@ -38,8 +37,16 @@ Drag a window to the edge of the screen. When the mouse cursor reaches the edge 
 
 ### Ignore an app
 
-   1. Focus the app that you want to ignore (make a window from that app frontmost).
-   2. Open the Rectangle menu and select "Ignore app"
+1. Focus the app that you want to ignore (make a window from that app frontmost).
+1. Open the Rectangle menu and select "Ignore app"
+
+## Execute an action by URL
+
+Open the URL `rectangle://execute-action?name=[name]`. Do not activate Rectangle.
+
+Available values for `[name]`: `left-half`, `right-half`, `center-half`, `top-half`, `bottom-half`, `top-left`, `top-right`, `bottom-left`, `bottom-right`, `first-third`, `center-third`, `last-third`, `first-two-thirds`, `last-two-thirds`, `maximize`, `almost-maximize`, `maximize-height`, `smaller`, `larger`, `center`, `restore`, `next-display`, `previous-display`, `move-left`, `move-right`, `move-up`, `move-down`, `first-fourth`, `second-fourth`, `third-fourth`, `last-fourth`, `first-three-fourths`, `last-three-fourths`, `top-left-sixth`, `top-center-sixth`, `top-right-sixth`, `bottom-left-sixth`, `bottom-center-sixth`, `bottom-right-sixth`, `specified`, `reverse-all`, `top-left-ninth`, `top-center-ninth`, `top-right-ninth`, `middle-left-ninth`, `middle-center-ninth`, `middle-right-ninth`, `bottom-left-ninth`, `bottom-center-ninth`, `bottom-right-ninth`, `top-left-third`, `top-right-third`, `bottom-left-third`, `bottom-right-third`, `top-left-eighth`, `top-center-left-eighth`, `top-center-right-eighth`, `top-right-eighth`, `bottom-left-eighth`, `bottom-center-left-eighth`, `bottom-center-right-eighth`, `bottom-right-eighth`, `tile-all`, `cascade-all`
+
+Example, from a shell: `open -g "rectangle://execute-action?name=left-half"`
 
 ## Terminal Commands for Hidden Preferences
 
@@ -91,6 +98,12 @@ If windows aren't resizing or moving as you expect, here's some initial steps to
 1. Hold down the alt (option) key with the Rectangle menu open.
 1. Select the "View Logging..." menu item, which is in place of the "About" menu item.
 1. Logging will appear in the window as you perform Rectangle commands.
+
+## Import & export JSON config
+
+There are buttons for importing and exporting the config as a JSON file in the settings tab of the preferences window. 
+
+Upon launch, Rectangle will load a config file at `~/Library/Application Support/Rectangle/RectangleConfig.json` if it is present and will rename that file with a time/date stamp so that it isn't read on subsequent launches.
 
 ## Preferences Storage
 

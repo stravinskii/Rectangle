@@ -19,7 +19,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let accessibilityAuthorization = AccessibilityAuthorization()
     private let statusItem = RectangleStatusItem.instance
     static let windowHistory = WindowHistory()
-    
+    static let updaterController = SPUStandardUpdaterController(updaterDelegate: nil, userDriverDelegate: nil)
+
     private var shortcutManager: ShortcutManager!
     private var windowManager: WindowManager!
     private var applicationToggle: ApplicationToggle!
@@ -35,10 +36,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var quitMenuItem: NSMenuItem!
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        Defaults.loadFromSupportDir()
         if let lastVersion = Defaults.lastVersion.value,
            let intLastVersion = Int(lastVersion) {
             if intLastVersion < 46 {
                 MASShortcutMigration.migrate()
+            }
+            if intLastVersion < 64 {
+                SnapAreaModel.instance.migrate()
             }
         }
         
@@ -86,8 +91,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         })
     }
     
+    func applicationWillBecomeActive(_ notification: Notification) {
+        Notification.Name.appWillBecomeActive.post()
+    }
+    
     func checkAutoCheckForUpdates() {
-        SUUpdater.shared()?.automaticallyChecksForUpdates = Defaults.SUEnableAutomaticChecks.enabled
+        Self.updaterController.updater.automaticallyChecksForUpdates = Defaults.SUEnableAutomaticChecks.enabled
     }
     
     func accessibilityTrusted() {
@@ -124,7 +133,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard !Defaults.windowSnapping.userDisabled, !Defaults.notifiedOfProblemApps.enabled else { return }
         
         let problemBundleIds: [String] = [
-            "com.mathworks.matlab", "com.live2d.cubism.CECubismEditorApp"
+            "com.mathworks.matlab", "com.live2d.cubism.CECubismEditorApp", "com.aquafold.datastudio.DataStudio"
         ]
         
         // these apps are java based with dynamic bundleIds
@@ -219,7 +228,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @IBAction func checkForUpdates(_ sender: Any) {
-        SUUpdater.shared()?.checkForUpdates(sender)
+        Self.updaterController.checkForUpdates(sender)
     }
     
     @IBAction func authorizeAccessibility(_ sender: Any) {
@@ -278,7 +287,7 @@ extension AppDelegate: NSMenuDelegate {
     }
     
     private func updateWindowActionMenuItems(menu: NSMenu) {
-        let frontmostWindow = AccessibilityElement.frontmostWindow()
+        let frontmostWindow = AccessibilityElement.getFrontWindowElement()
         let screenCount = NSScreen.screens.count
         let isPortrait = NSScreen.main?.frame.isLandscape == false
 
@@ -492,4 +501,20 @@ extension AppDelegate: NSWindowDelegate {
         NSApp.abortModal()
     }
     
+}
+
+extension AppDelegate {
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls {
+            guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else { continue }
+            if components.host == "execute-action" && components.path.isEmpty {
+                guard let name = (components.queryItems?.first { $0.name == "name" })?.value else { continue }
+                if let action = (WindowAction.active.first { urlName($0.name) == name }) { action.postUrl() }
+            }
+        }
+    }
+    
+    private func urlName(_ name: String) -> String {
+        return name.map { $0.isUppercase ? "-" + $0.lowercased() : String($0) }.joined()
+    }
 }
